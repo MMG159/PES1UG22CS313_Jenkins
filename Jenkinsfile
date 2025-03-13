@@ -1,36 +1,83 @@
 pipeline {
-    agent {
-        docker {
-            image 'node:14'
+    agent any
+    
+    stages {
+        stage('Clone Repository') {
+            steps {
+                script {
+                    sh 'pipeline {
+    agent any
+    
+    stages {
+        stage('Clone Repository') {
+            steps {
+                script {
+                    sh 'git clone https://github.com/MMG159/PES1UG22CS313_Jenkins.git'
+                }
+            }
+        }
+        
+        stage('Build') {
+            steps {
+                script {
+                    sh 'g++ -o PES1UG22CS313 PES1UG22CS313_Jenkins/working.cpp'
+                }
+            }
+        }
+        
+        stage('Test') {
+            steps {
+                script {
+                    sh './PES1UG22CS313'
+                }
+            }
+        }
+        
+        stage('Deploy') {
+            steps {
+                echo 'deploy'
+                // Add deployment steps here
+            }
         }
     }
-    stages {
-        stage('Clone repository') {
-            steps {
-                git branch: 'main',
-                url: 'https://github.com/MMG159/PES1UG22CS313_Jenkins.git'
+    
+    post {
+        failure {
+            echo 'pipeline failed'
+        }
+    }
+}'
+                }
             }
         }
-        stage('Install dependencies') {
+        
+        stage('Build') {
             steps {
-                sh 'npm install'
+                script {
+                    sh 'g++ -o PES1UG22CS313 PES1UG22CS313_Jenkins/working.cpp'
+                }
             }
         }
-        stage('Build application') {
+        
+        stage('Test') {
             steps {
-                sh 'npm run build'
+                script {
+                    sh './PES1UG22CS313'
+                }
             }
         }
-        stage('Test application') {
+        
+        stage('Deploy') {
             steps {
-                sh 'npm test'
+                echo 'deploy'
+                // Add deployment steps here
             }
         }
-        stage('Push Docker image') {
-            steps {
-                sh 'docker build -t <user>/<image>:$BUILD_NUMBER .'
-                sh 'docker push <user>/<image>:$BUILD_NUMBER'
-            }
+    }
+    
+    post {
+        failure {
+            echo 'pipeline failed'
         }
     }
 }
